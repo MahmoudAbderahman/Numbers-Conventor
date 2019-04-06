@@ -33,9 +33,9 @@ public class ZD_Model {
 	public void setBase_output(int base_output) {
 		this.base_output = base_output;
 	}
-	public int getResult() {
+	public String getResult() {
 		
-		int output = convertToDecimal(getBase_input());
+		String output = fromDeci();
 		return output;
 	}
 	public ZD_Model(int number_input, int base_input, int base_output) {
@@ -43,7 +43,6 @@ public class ZD_Model {
 		this.number_input = number_input;
 		this.base_input = base_input;
 		this.base_output = base_output;
-
 	}
 
 	public ZD_Model() {
@@ -59,24 +58,60 @@ public class ZD_Model {
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		pcs.addPropertyChangeListener(l);
 	}
-	private int convertToDecimal(int base)
+	private int convertToDecimal()
 	{
 		int decimal_value = getNumber_input();
-		base = getBase_input();
+		int base = getBase_input();
 		if(base != 10)
 		{
-			
 			int begin = 0;
 			String input = Integer.toString(getNumber_input());
 			
 			for(int i = 0; i < input.length(); i++)
 			{
 				int digit = Integer.valueOf(input.charAt(i)) - '0';
+				if(digit >= base)
+				{
+					throw new NumberFormatException();
+				}
 				decimal_value = (digit + begin);
 				begin = decimal_value * base; 
 			}
 		}
 		return decimal_value;
 	}
-	
+	// To return char for a value. For  
+	// example '2' is returned for 2.  
+	// 'A' is returned for 10. 'B' for 11 
+	private  char reVal(int num) 
+	{ 
+	    if (num >= 0 && num <= 9) 
+	        return (char)(num + 48); 
+	    else
+	        return (char)(num - 10 + 65); 
+	} 
+	  
+	// Function to convert a given decimal number 
+	// to a base 'base' and 
+	private  String fromDeci() 
+	{ 
+	    String s = ""; 
+	    int decimal_num = convertToDecimal();
+	    
+	    // Convert input number is given  
+	    // base by repeatedly dividing it 
+	    // by base and taking remainder 
+	    while (decimal_num > 0) 
+	    { 
+	        s += reVal(decimal_num % getBase_output()); 
+	        decimal_num /= getBase_output(); 
+	    } 
+	  
+	    StringBuilder sb = new StringBuilder(s);
+	    String res = sb.reverse().toString(); 
+
+	    // Reverse the result 
+	    //reverse(res); 
+	    return new String(res); 
+	}
 }
