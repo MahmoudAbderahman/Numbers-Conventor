@@ -104,6 +104,11 @@ public class ZD_View extends JPanel implements ActionListener, PropertyChangeLis
 			JOptionPane.showMessageDialog(this,
 					"Falsches Zahlenformat","Eingabefehler",JOptionPane.ERROR_MESSAGE);
 		}
+		catch(ArithmeticException e)
+		{
+			JOptionPane.showMessageDialog(this,
+					"Die eingegebene Nummer verursacht Integerueberlauf!","Eingabefehler",JOptionPane.ERROR_MESSAGE);
+		}
 		
 	}
 	
