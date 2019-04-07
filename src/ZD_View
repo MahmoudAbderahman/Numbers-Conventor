@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
 
-public class ZD_View extends JPanel implements ActionListener, PropertyChangeListener {
+public class ZDView extends JPanel implements ActionListener, PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 
 	String[] numbers = {"2 Binary", "3", "4", "5", 
@@ -20,9 +20,9 @@ public class ZD_View extends JPanel implements ActionListener, PropertyChangeLis
 	JComboBox numbersList2;
 	JButton compute = new JButton("Berechnen");
 
-	ZD_Model model;
+	ZDModel model;
 
-	public ZD_View(ZD_Model model)
+	public ZDView(ZDModel model)
 	{
 		this.model = model;
 		model.addPropertyChangeListener(this);
@@ -97,6 +97,10 @@ public class ZD_View extends JPanel implements ActionListener, PropertyChangeLis
 
 			}
 			
+			if(number_input.getText().charAt(0) == '-')
+			{
+				throw new NumberFormatException();
+			}
 			model.setNumber_input(number_input.getText());
 			
 			model.process();
@@ -119,7 +123,7 @@ public class ZD_View extends JPanel implements ActionListener, PropertyChangeLis
 		
 		String pn = e.getPropertyName();
 		switch(pn) {
-		case ZD_Model.OUTPUT_CHANGE:
+		case ZDModel.OUTPUT_CHANGE:
 		// process change of "ggt" property
 			number_output.setText(e.getNewValue()+"");
 			break;
