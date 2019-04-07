@@ -7,13 +7,14 @@ public class ZD_Model {
 	//static final String BASE_OUTPUT_CHANGE = "baseout"; 
 	static final String OUTPUT_CHANGE = "out";
 	String number_output;int base_input, base_output;
-	int result, number_input;
+	int result;
+	String number_input;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-	public int getNumber_input() {
+	public String getNumber_input() {
 		return number_input;
 	}
-	public void setNumber_input(Integer integer) {
-		this.number_input = integer;
+	public void setNumber_input(String string) {
+		this.number_input = string;
 	}
 	public String getNumber_output() {
 		return number_output;
@@ -38,7 +39,7 @@ public class ZD_Model {
 		String output = fromDeci();
 		return output;
 	}
-	public ZD_Model(int number_input, int base_input, int base_output) {
+	public ZD_Model(String number_input, int base_input, int base_output) {
 		super();
 		this.number_input = number_input;
 		this.base_input = base_input;
@@ -60,10 +61,12 @@ public class ZD_Model {
 	}
 	private int convertToDecimal()
 	{
-		int decimal_value = getNumber_input();
+		
+		
 		int base = getBase_input();
-		if(base != 10)
+		if(base < 10)
 		{
+			int decimal_value = Integer.valueOf(getNumber_input());
 			int begin = 0;
 			String input = Integer.toString(getNumber_input());
 			
