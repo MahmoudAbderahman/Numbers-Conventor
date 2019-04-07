@@ -1,12 +1,10 @@
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ZD_Model {
-	//static final String INPUT_CHANGE = "in";
-	//static final String BASE_INPUT_CHANGE = "basein";
-	//static final String BASE_OUTPUT_CHANGE = "baseout"; 
+public class ZDModel {
+	
 	static final String OUTPUT_CHANGE = "out";
-	String number_output;int base_input, base_output;
+	int base_input, base_output;
 	int result;
 	String number_input;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -16,12 +14,7 @@ public class ZD_Model {
 	public void setNumber_input(String string) {
 		this.number_input = string;
 	}
-	public String getNumber_output() {
-		return number_output;
-	}
-	public void setNumber_output(String number_output) {
-		this.number_output = number_output;
-	}
+	
 	public int getBase_input() {
 		return base_input;
 	}
@@ -37,16 +30,20 @@ public class ZD_Model {
 	public String getResult() {
 		
 		String output = fromDeci();
+		if(output == null || output.length() == 0)
+		{
+			return "0";
+		}
 		return output;
 	}
-	public ZD_Model(String number_input, int base_input, int base_output) {
+	public ZDModel(String number_input, int base_input, int base_output) {
 		super();
 		this.number_input = number_input;
 		this.base_input = base_input;
 		this.base_output = base_output;
 	}
 
-	public ZD_Model() {
+	public ZDModel() {
 		super();
 		
 	}
@@ -62,18 +59,18 @@ public class ZD_Model {
 	private int convertToDecimal()
 	{
 		
-		
+		int decimal_value = 0;
 		int base = getBase_input();
+		
 		if(base < 10)
 		{
-			int decimal_value = Integer.valueOf(getNumber_input());
 			int begin = 0;
-			String input = Integer.toString(getNumber_input());
+			String input = getNumber_input();
 			
 			for(int i = 0; i < input.length(); i++)
 			{
 				int digit = Integer.valueOf(input.charAt(i)) - '0';
-				if(digit >= base)
+				if(checkNumber(digit) == true)
 				{
 					throw new NumberFormatException();
 				}
@@ -81,6 +78,22 @@ public class ZD_Model {
 				begin = decimal_value * base; 
 			}
 		}
+		else if(base >= 10)
+		{
+			String digits = "0123456789ABCDEF";
+			String input = getNumber_input().toUpperCase();
+			for(int i = 0; i < input.length(); i++)
+			{
+				char c = input.charAt(i);
+				int d = digits.indexOf(c);
+				if(checkNumber(d) == true)
+				{
+					throw new NumberFormatException();
+				}
+				decimal_value = base*decimal_value + d;
+			}
+		}
+		
 		return decimal_value;
 	}
 	// To return char for a value. For  
@@ -93,7 +106,7 @@ public class ZD_Model {
 	    else
 	        return (char)(num - 10 + 65); 
 	} 
-	  
+	
 	// Function to convert a given decimal number 
 	// to a base 'base' and 
 	private  String fromDeci() 
@@ -109,12 +122,22 @@ public class ZD_Model {
 	        s += reVal(decimal_num % getBase_output()); 
 	        decimal_num /= getBase_output(); 
 	    } 
-	  
+	    
 	    StringBuilder sb = new StringBuilder(s);
 	    String res = sb.reverse().toString(); 
 
 	    // Reverse the result 
 	    //reverse(res); 
 	    return new String(res); 
+	}
+	
+	// Function to check if a number bigger than the base
+	private boolean checkNumber(int n)
+	{
+		if(n >= getBase_input())
+		{
+			return true;
+		}
+		return false;
 	}
 }
