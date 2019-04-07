@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
 
-public class ZDView extends JPanel implements ActionListener, PropertyChangeListener {
+public class ZD_View extends JPanel implements ActionListener, PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 
 	String[] numbers = {"2 Binary", "3", "4", "5", 
@@ -22,7 +22,7 @@ public class ZDView extends JPanel implements ActionListener, PropertyChangeList
 
 	ZDModel model;
 
-	public ZDView(ZDModel model)
+	public ZD_View(ZDModel model)
 	{
 		this.model = model;
 		model.addPropertyChangeListener(this);
