@@ -1,7 +1,7 @@
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ZDModel {
+public class ZD_Model {
 	
 	static final String OUTPUT_CHANGE = "out";
 	int base_input, base_output;
@@ -36,14 +36,14 @@ public class ZDModel {
 		}
 		return output;
 	}
-	public ZDModel(String number_input, int base_input, int base_output) {
+	public ZD_Model(String number_input, int base_input, int base_output) {
 		super();
 		this.number_input = number_input;
 		this.base_input = base_input;
 		this.base_output = base_output;
 	}
 
-	public ZDModel() {
+	public ZD_Model() {
 		super();
 		
 	}
