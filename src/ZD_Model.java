@@ -27,7 +27,7 @@ public class ZD_Model {
 	public void setBase_output(int base_output) {
 		this.base_output = base_output;
 	}
-	public String getResult() {
+	public String getResult() throws Exceptions {
 		
 		String output = fromDeci();
 		if(output == null || output.length() == 0)
@@ -47,7 +47,7 @@ public class ZD_Model {
 		super();
 		
 	}
-	public void process()
+	public void process() throws Exceptions
 	{
 		int oldResult = result;
 		pcs.firePropertyChange(OUTPUT_CHANGE,  oldResult, getResult());
@@ -56,7 +56,7 @@ public class ZD_Model {
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		pcs.addPropertyChangeListener(l);
 	}
-	private int convertToDecimal()
+	private int convertToDecimal() throws Exceptions
 	{
 		
 		int decimal_value = 0;
@@ -66,16 +66,19 @@ public class ZD_Model {
 		{
 			int begin = 0;
 			String input = getNumber_input();
-			
 			for(int i = 0; i < input.length(); i++)
 			{
 				int digit = Integer.valueOf(input.charAt(i)) - '0';
 				if(checkNumber(digit) == true)
 				{
-					throw new NumberFormatException();
+					throw new NumberFormatException("Eine Ziffer ist groesser als die Basis!");
 				}
 				decimal_value = (digit + begin);
 				begin = decimal_value * base; 
+				if(overflowCheck(digit, decimal_value) == true)
+				{
+					throw new Exceptions("Die eingegebene Nummer verursacht Integerueberlauf!");
+				}
 			}
 		}
 		else if(base >= 10)
@@ -88,9 +91,13 @@ public class ZD_Model {
 				int d = digits.indexOf(c);
 				if(checkNumber(d) == true)
 				{
-					throw new NumberFormatException();
+					throw new NumberFormatException("Eine Ziffer ist groesser als die Basis!");
 				}
 				decimal_value = base*decimal_value + d;
+				if(overflowCheck(d, decimal_value) == true)
+				{
+					throw new Exceptions("Die eingegebene Nummer verursacht Integerueberlauf!");
+				}
 			}
 		}
 		
@@ -109,7 +116,7 @@ public class ZD_Model {
 	
 	// Function to convert a given decimal number 
 	// to a base 'base' and 
-	private  String fromDeci() 
+	private  String fromDeci() throws Exceptions 
 	{ 
 	    String s = ""; 
 	    int decimal_num = convertToDecimal();
@@ -124,9 +131,10 @@ public class ZD_Model {
 	    } 
 	    
 	    StringBuilder sb = new StringBuilder(s);
+	// Reverse the result 
 	    String res = sb.reverse().toString(); 
 
-	    // Reverse the result 
+	    
 	    //reverse(res); 
 	    return new String(res); 
 	}
@@ -140,4 +148,15 @@ public class ZD_Model {
 		}
 		return false;
 	}
+	// Check if the number causes integer overflow
+	private boolean overflowCheck(int x, int z)
+	{
+		if(x > (Integer.MAX_VALUE - z) / getBase_input())
+		{
+			return true;
+		}
+		return false;
+
+	}
+	
 }
