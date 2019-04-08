@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -8,28 +9,33 @@ import javax.swing.*;
 public class ZD_View extends JPanel implements ActionListener, PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 
+	// Array of strings for the combobox choices
 	String[] numbers = {"2 Binary", "3", "4", "5", 
 			"6", "7", "8 Octal", "9", 
 			"10 Decimal", "11", "12", "13",
 			"14", "15", "16 Hexadecimal"};
 	
+	
 	JTextField number_input = new JTextField("",10);
 	JTextField number_output = new JTextField("",10);
+	
 	String selected_item = "";
+	
 	JComboBox numbersList1;
 	JComboBox numbersList2;
+	
 	JButton compute = new JButton("Berechnen");
 
-	ZDModel model;
+	ZD_Model model;
 
-	public ZD_View(ZDModel model)
+	public ZD_View(ZD_Model model)
 	{
 		this.model = model;
 		model.addPropertyChangeListener(this);
 		
 		numbersList1 = new JComboBox(numbers);
 		numbersList1.setSelectedItem(0);
-		numbersList1.addActionListener(this);
+		//numbersList1.addActionListener(this);
 		setBackground(Color.lightGray);
 		
 		Box box = Box.createVerticalBox();
@@ -97,34 +103,33 @@ public class ZD_View extends JPanel implements ActionListener, PropertyChangeLis
 
 			}
 			
-			if(number_input.getText().charAt(0) == '-')
+			if(!number_input.getText().matches("[a-fA-F0-9]+") || number_input.getText() == null || number_input.getText().length() == 0)
 			{
-				throw new NumberFormatException();
+				throw new NumberFormatException("Sie haben nichts oder Flasches Eingabeformat eingegebene!");
 			}
+			
 			model.setNumber_input(number_input.getText());
 			
 			model.process();
 			
 		} catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(this,
-					"Falsches Zahlenformat","Eingabefehler",JOptionPane.ERROR_MESSAGE);
+					nfe.getMessage(),"Eingabefehler",JOptionPane.ERROR_MESSAGE);
 		}
-		catch(ArithmeticException e)
+		catch(Exceptions e)
 		{
 			JOptionPane.showMessageDialog(this,
-					"Die eingegebene Nummer verursacht Integerueberlauf!","Eingabefehler",JOptionPane.ERROR_MESSAGE);
+					e.getMessage(),"Eingabefehler",JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		// TODO Auto-generated method stub
-		
+	
 		String pn = e.getPropertyName();
 		switch(pn) {
-		case ZDModel.OUTPUT_CHANGE:
-		// process change of "ggt" property
+		case ZD_Model.OUTPUT_CHANGE:
 			number_output.setText(e.getNewValue()+"");
 			break;
 		default: 
