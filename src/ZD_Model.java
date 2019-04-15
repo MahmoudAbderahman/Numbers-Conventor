@@ -56,51 +56,40 @@ public class ZD_Model {
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		pcs.addPropertyChangeListener(l);
 	}
+	
 	private int convertToDecimal() throws Exceptions
 	{
 		
 		int decimal_value = 0;
 		int base = getBase_input();
-		
-		if(base < 10)
+		boolean base_morethan_ten = base >= 10 ? true : false;
+		String input;
+		String digits = "0123456789ABCDEF";
+		if(base_morethan_ten)
 		{
-			int begin = 0;
-			String input = getNumber_input();
-			for(int i = 0; i < input.length(); i++)
-			{
-				int digit = Integer.valueOf(input.charAt(i)) - '0';
-				if(checkNumber(digit) == true)
-				{
-					throw new NumberFormatException("Eine Ziffer ist groesser als die Basis!");
-				}
-				decimal_value = (digit + begin);
-				begin = decimal_value * base; 
-				if(overflowCheck(digit, decimal_value) == true)
-				{
-					throw new Exceptions("Die eingegebene Nummer verursacht Integerueberlauf!");
-				}
-			}
+			input = getNumber_input().toUpperCase();
 		}
-		else if(base >= 10)
+		else
 		{
-			String digits = "0123456789ABCDEF";
-			String input = getNumber_input().toUpperCase();
-			for(int i = 0; i < input.length(); i++)
-			{
-				char c = input.charAt(i);
-				int d = digits.indexOf(c);
-				if(checkNumber(d) == true)
-				{
-					throw new NumberFormatException("Eine Ziffer ist groesser als die Basis!");
-				}
-				decimal_value = base*decimal_value + d;
-				if(overflowCheck(d, decimal_value) == true)
-				{
-					throw new Exceptions("Die eingegebene Nummer verursacht Integerueberlauf!");
-				}
-			}
+			input = getNumber_input();
 		}
 		
+		for(int i = 0; i < input.length(); i++)
+		{
+			char c = input.charAt(i);
+			int d = digits.indexOf(c);
+			if(checkNumber(d) == true)
+			{
+				throw new NumberFormatException("Eine Ziffer ist groesser als die Basis!");
+			}
+
+			if(overflowCheck(decimal_value, d) == true)
+			{
+				throw new Exceptions("Die eingegebene Nummer verursacht Integerueberlauf!");
+			}
+			decimal_value = base*decimal_value + d;
+
+		}
 		return decimal_value;
 	}
 	// To return char for a value. For  
@@ -142,7 +131,7 @@ public class ZD_Model {
 	// Function to check if a number bigger than the base
 	private boolean checkNumber(int n)
 	{
-		if(n >= getBase_input())
+		if(n >= getBase_input() || n < 0)
 		{
 			return true;
 		}
@@ -151,7 +140,7 @@ public class ZD_Model {
 	// Check if the number causes integer overflow
 	private boolean overflowCheck(int x, int z)
 	{
-		if(x > (Integer.MAX_VALUE - z) / getBase_input())
+		if(x > ((2147483647 - z) / getBase_input()))
 		{
 			return true;
 		}
